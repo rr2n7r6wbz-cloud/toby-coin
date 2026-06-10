@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Toby Coin</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:#0a0a0f;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#fff;min-height:100vh}
+#app{max-width:430px;margin:0 auto;background:#0a0a0f;min-height:100vh;position:relative;overflow:hidden}
+
+/* TOP BAR */
+#topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px;background:#0a0a0f}
+.tb-logo{font-size:22px;font-weight:700;color:#fff}
+.tb-logo span{color:#FF6B00}
+.tb-center{flex:1;margin:0 10px}
+.tb-coin-pill{background:#141414;border:1px solid #222;border-radius:12px;padding:7px 12px;display:flex;align-items:center;gap:8px;cursor:pointer}
+.tcp-icon{width:28px;height:28px;background:#FF6B00;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.tcp-info .tcp-name{font-size:12px;font-weight:600;color:#fff}
+.tcp-info .tcp-level{font-size:10px;color:#888}
+.tcp-info .tcp-level span{color:#FF6B00}
+.tcp-arrow{color:#555;margin-left:auto;font-size:14px}
+.tb-right{display:flex;align-items:center;gap:8px}
+.tb-btn{width:34px;height:34px;background:#141414;border:1px solid #222;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#ccc;font-size:16px;position:relative}
+.tb-notif::after{content:'';position:absolute;top:6px;right:7px;width:6px;height:6px;background:#FF6B00;border-radius:50%;border:1px solid #0a0a0f}
+.tb-avatar{width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid #FF6B00;cursor:pointer}
+.tb-avatar img{width:100%;height:100%;object-fit:cover}
+
+/* MAIN GRID */
+#content{padding:0 10px 80px;overflow-y:auto;height:calc(100vh - 58px)}
+.main-grid{display:grid;grid-template-columns:140px 1fr 140px;gap:8px;align-items:start}
+
+/* LEFT COL */
+.left-col{display:flex;flex-direction:column;gap:8px}
+.card{background:#141414;border:1px solid #1e1e1e;border-radius:12px;padding:12px}
+.card-hd{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.card-hd i{font-size:14px;color:#FF6B00}
+
+.streak-num{font-size:30px;font-weight:700;color:#FF6B00;line-height:1}
+.streak-label{font-size:10px;color:#888;margin-top:2px;margin-bottom:8px}
+.streak-dots{display:flex;gap:4px;margin-bottom:6px}
+.sd{width:18px;height:18px;border-radius:50%;background:#1e1e1e;display:flex;align-items:center;justify-content:center;font-size:8px}
+.sd.done{background:#FF6B00}
+.sd.gift{background:#1e1e1e;border:1px solid #FF6B00}
+.streak-today{font-size:10px;color:#888}
+.streak-today span{color:#FF6B00;font-weight:500}
+
+.ref-num{font-size:26px;font-weight:700;color:#fff;line-height:1}
+.ref-lbl{font-size:10px;color:#888;margin-top:2px;margin-bottom:4px}
+.ref-earn{font-size:11px;color:#FF6B00;font-weight:500;margin-bottom:8px}
+.btn-orange{width:100%;background:transparent;border:1px solid #FF6B00;border-radius:8px;color:#FF6B00;font-size:11px;font-weight:600;padding:7px 6px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;transition:background .15s}
+.btn-orange:hover{background:rgba(255,107,0,.12)}
+
+.rank-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.rank-medal{font-size:26px}
+.rank-name{font-size:14px;font-weight:600;color:#fff}
+.xp-bar-wrap{margin-top:4px}
+.xp-track{height:5px;background:#1e1e1e;border-radius:3px;overflow:hidden;margin-bottom:3px}
+.xp-fill{height:100%;background:#FF6B00;border-radius:3px;transition:width .5s}
+.xp-label{font-size:10px;color:#888}
+.xp-label span{color:#fff}
+
+.tge-nums{display:flex;gap:4px;margin:6px 0}
+.tge-box{flex:1;background:#1a1a1a;border-radius:6px;padding:5px 2px;text-align:center}
+.tge-n{font-size:16px;font-weight:700;color:#fff;line-height:1}
+.tge-u{font-size:8px;color:#666;margin-top:1px}
+.tge-colon{font-size:18px;font-weight:700;color:#FF6B00;display:flex;align-items:center;padding-top:2px}
+.btn-orange-outline{width:100%;background:transparent;border:1px solid #FF6B00;border-radius:8px;color:#FF6B00;font-size:10px;font-weight:500;padding:7px 6px;cursor:pointer;transition:background .15s;margin-top:4px}
+.btn-orange-outline:hover{background:rgba(255,107,0,.1)}
+
+/* CENTER COL */
+.center-col{display:flex;flex-direction:column;align-items:center;gap:0}
+.total-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;text-align:center}
+.total-val{font-size:30px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px;line-height:1}
+.total-val .t-icon{width:26px;height:26px;background:#FF6B00;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.saatlik{font-size:12px;color:#FF6B00;font-weight:600;text-align:center;margin:2px 0 6px}
+
+/* ROBOT */
+#robot-wrap{cursor:pointer;user-select:none;position:relative;width:170px;height:190px;display:flex;align-items:center;justify-content:center}
+#robot-wrap:active svg{transform:scale(0.95)}
+#robot-wrap svg{transition:transform .1s}
+.tap-pop{position:absolute;font-size:16px;font-weight:700;color:#FF6B00;pointer-events:none;animation:popUp .7s ease-out forwards;text-shadow:0 0 10px rgba(255,107,0,.6);z-index:10}
+@keyframes popUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-60px) scale(1.3)}}
+
+.energy-section{width:100%;margin:4px 0}
+.energy-top-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;margin-bottom:4px}
+.energy-top-row .elabel{color:#aaa;display:flex;align-items:center;gap:3px}
+.energy-top-row .eval{color:#fff;font-weight:500}
+.energy-blocks{display:flex;gap:3px}
+.eb{flex:1;height:8px;border-radius:2px;background:#1e1e1e;transition:background .3s}
+.eb.on{background:#FF6B00}
+
+.tap-btn-main{width:100%;background:#FF6B00;border:none;border-radius:14px;padding:14px 10px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;margin-top:6px;transition:transform .08s,background .15s;position:relative;overflow:hidden}
+.tap-btn-main:active{transform:scale(0.97);background:#e05e00}
+.tap-btn-icon{width:28px;height:28px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.tap-btn-text{font-size:16px;font-weight:700;letter-spacing:.3px}
+.tap-btn-sub{font-size:11px;opacity:.8;font-weight:400}
+
+.stats-row{display:flex;gap:8px;width:100%;margin-top:6px}
+.stat-mini{flex:1;background:#141414;border:1px solid #1e1e1e;border-radius:10px;padding:8px;display:flex;align-items:center;gap:6px}
+.stat-mini i{font-size:16px;color:#FF6B00}
+.sm-info .sm-v{font-size:11px;font-weight:600;color:#fff}
+.sm-info .sm-l{font-size:9px;color:#666}
+
+/* RIGHT COL */
+.right-col{display:flex;flex-direction:column;gap:8px}
+.task-card{background:#141414;border:1px solid #1e1e1e;border-radius:12px;padding:10px}
+.tasks-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.tasks-hd-left{display:flex;align-items:center;gap=5px;font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.5px}
+.tasks-hd-left i{font-size:13px;color:#FF6B00;margin-right:4px}
+.tasks-see-all{font-size:10px;color:#FF6B00;cursor:pointer}
+.task-item{display:flex;align-items:center;gap:7px;padding:7px 0;border-bottom:1px solid #1a1a1a}
+.task-item:last-of-type{border-bottom:none}
+.ti-icon{width:28px;height:28px;background:#1e1e1e;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.ti-info{flex:1}
+.ti-name{font-size:11px;color:#ddd;line-height:1.3}
+.ti-reward{font-size:10px;color:#FF6B00;font-weight:600;margin-top:1px}
+.ti-action{width:24px;height:24px;background:#FF6B00;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;border:none;transition:background .15s}
+.ti-action:hover{background:#e05e00}
+.ti-action.done{background:#2d5a2d;cursor:default}
+.ti-action i{font-size:12px;color:#fff}
+.all-tasks-btn{width:100%;background:#FF6B00;border:none;border-radius:9px;padding:9px;font-size:12px;font-weight:600;color:#fff;cursor:pointer;margin-top:6px;transition:background .15s}
+.all-tasks-btn:hover{background:#e05e00}
+
+.news-card{background:#141414;border:1px solid #1e1e1e;border-radius:12px;padding:10px}
+.news-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.news-hd-left{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:4px}
+.news-hd-left i{font-size:13px;color:#FF6B00}
+.news-see-all{font-size:10px;color:#FF6B00;cursor:pointer}
+.news-item{margin-bottom:7px}
+.news-item:last-child{margin-bottom:0}
+.news-thumb{width:100%;height:48px;background:#1e1e1e;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;overflow:hidden;font-size:20px}
+.news-title{font-size:10px;color:#ddd;line-height:1.4}
+.news-time{font-size:9px;color:#555;margin-top:2px}
+
+/* MESSENGER CARD */
+.messenger-banner{background:linear-gradient(135deg,#1a0f00 0%,#2a1500 50%,#1a0800 100%);border:1px solid rgba(255,107,0,.35);border-radius:14px;padding:14px;display:flex;gap:10px;align-items:center;margin-top:8px;position:relative;overflow:hidden}
+.messenger-banner::before{content:'';position:absolute;top:-20px;right:40px;width:80px;height:80px;background:rgba(255,107,0,.08);border-radius:50%}
+.mb-phone{width:52px;flex-shrink:0}
+.mb-phone-img{width:52px;height:80px;background:#0a0a0f;border-radius:10px;border:1px solid #333;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.mb-phone-screen{width:40px;height:64px;background:#111;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.mb-phone-icon{width:24px;height:24px;background:#FF6B00;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px}
+.mb-content{flex:1}
+.mb-badge{display:inline-block;background:rgba(255,107,0,.2);color:#FF6B00;border-radius:4px;font-size:9px;font-weight:600;padding:2px 7px;letter-spacing:.5px;margin-bottom:5px}
+.mb-title{font-size:16px;font-weight:700;color:#fff;line-height:1.1;margin-bottom:3px}
+.mb-sub{font-size:10px;color:#888;margin-bottom:8px}
+.mb-features{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.mb-feat{display:flex;align-items:center;gap:3px;font-size:9px;color:#888}
+.mb-feat i{font-size:11px;color:#FF6B00}
+.mb-stores{display:flex;flex-direction:column;gap:4px}
+.mb-store-btn{display:flex;align-items:center;gap=5px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:7px;padding:5px 8px;gap:5px;cursor:pointer;transition:border-color .15s}
+.mb-store-btn:hover{border-color:#FF6B00}
+.mb-store-btn i{font-size:14px;color:#fff}
+.mb-store-text .ms-label{font-size:8px;color:#888}
+.mb-store-text .ms-name{font-size:10px;font-weight:600;color:#fff}
+.mb-pre-btn{width:100%;background:#FF6B00;border:none;border-radius:9px;padding:10px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;transition:background .15s}
+.mb-pre-btn:hover{background:#e05e00}
+.mb-right{display:flex;flex-direction:column;gap:6px;flex-shrink:0;min-width:100px}
+
+/* BOTTOM TABS */
+#tabs{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#0d0d0d;border-top:1px solid #1e1e1e;display:grid;grid-template-columns:repeat(5,1fr);z-index:100}
+.tab{padding:9px 4px 7px;text-align:center;font-size:9px;color:#444;cursor:pointer;transition:color .2s;position:relative}
+.tab.active{color:#FF6B00}
+.tab i{display:block;font-size:22px;margin-bottom:2px}
+.tab-badge{position:absolute;top:7px;right:calc(50% - 16px);background:#FF6B00;color:#fff;font-size:8px;font-weight:700;border-radius:8px;padding:1px 5px;min-width:16px;text-align:center}
+
+/* SCREENS */
+.screen{display:none}
+.screen.active{display:block}
+#boost-content,#tasks-content,#friends-content,#rank-content{padding:10px}
+
+.section-hd{font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 8px;display:flex;align-items:center;gap:5px}
+.section-hd i{color:#FF6B00;font-size:14px}
+
+.upg-card{background:#141414;border:1px solid #1e1e1e;border-radius:12px;padding:11px 12px;display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.upg-ico{width:38px;height:38px;background:#1e1e1e;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid #2a2a2a}
+.upg-info{flex:1}
+.upg-name{font-size:12px;font-weight:600;color:#ddd}
+.upg-desc{font-size:10px;color:#555;margin-top:1px}
+.upg-right{text-align:right}
+.upg-cost{font-size:11px;color:#FF6B00;font-weight:600}
+.upg-lvl{font-size:9px;color:#444;margin-top:1px}
+.upg-btn{background:rgba(255,107,0,.15);border:1px solid rgba(255,107,0,.4);color:#FF6B00;border-radius:6px;padding:4px 9px;font-size:10px;cursor:pointer;margin-top:3px;transition:background .15s}
+.upg-btn:hover{background:rgba(255,107,0,.28)}
+.upg-btn:disabled{opacity:.25;cursor:default}
+
+.full-task{background:#141414;border:1px solid #1e1e1e;border-radius:12px;padding:11px 12px;display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.ft-ico{width:36px;height:36px;background:#1e1e1e;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ft-info{flex:1}
+.ft-name{font-size:12px;font-weight:500;color:#ddd}
+.ft-reward{font-size:11px;color:#FF6B00;font-weight:600;margin-top:1px}
+.ft-btn{background:rgba(255,107,0,.15);border:1px solid rgba(255,107,0,.4);color:#FF6B00;border-radius:7px;padding:6px 10px;font-size:11px;cursor:pointer;flex-shrink:0;transition:background .15s}
+.ft-btn:hover{background:rgba(255,107,0,.28)}
+.ft-btn.claimed{background:rgba(45,90,45,.2);border-color:rgba(60,180,60,.3);color:#4caf50;cursor:default}
+
+.ref-code-box{background:#1a1a1a;border:1px solid rgba(255,107,0,.3);border-radius:10px;padding:12px;text-align:center;font-size:20px;font-weight:700;color:#FF6B00;letter-spacing:3px;margin:8px 0}
+.ref-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.rs-box{background:#141414;border:1px solid #1e1e1e;border-radius:10px;padding:10px;text-align:center}
+.rs-v{font-size:22px;font-weight:700;color:#fff}
+.rs-l{font-size:10px;color:#555;margin-top:2px}
+.copy-btn-full{width:100%;background:#FF6B00;border:none;border-radius:9px;padding:11px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;transition:background .15s}
+.copy-btn-full:hover{background:#e05e00}
+.ref-info-box{background:rgba(255,107,0,.06);border:1px solid rgba(255,107,0,.15);border-radius:10px;padding:12px;font-size:11px;color:#888;text-align:center;line-height:1.8;margin-top:10px}
+.ref-info-box b{color:#FF6B00;font-weight:600}
+
+.rank-card{background:#141414;border:1px solid #1e1e1e;border-radius:12px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.rank-pos{font-size:18px;font-weight:700;color:#555;width:28px;text-align:center}
+.rank-pos.top{color:#FF6B00}
+.rank-avatar{width:36px;height:36px;border-radius:50%;background:#FF6B00;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.rank-name-col{flex:1}
+.rank-uname{font-size:13px;font-weight:500;color:#ddd}
+.rank-coins{font-size:11px;color:#FF6B00;margin-top:1px}
+.rank-badge-pill{background:rgba(255,107,0,.12);border:1px solid rgba(255,107,0,.3);border-radius:6px;padding:3px 7px;font-size:9px;color:#FF6B00;font-weight:600}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div class="tb-logo">Toby<span>.</span></div>
+  <div class="tb-center">
+    <div class="tb-coin-pill">
+      <div class="tcp-icon">T</div>
+      <div class="tcp-info">
+        <div class="tcp-name">Toby Coin</div>
+        <div class="tcp-level">Level <span id="level-num">1</span> • <span id="level-name">Bronze Miner</span></div>
+      </div>
+      <i class="ti ti-chevron-right tcp-arrow"></i>
+    </div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-btn tb-notif"><i class="ti ti-bell"></i></div>
+    <div class="tb-btn tb-avatar"><div style="width:100%;height:100%;background:#FF6B00;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700">U</div></div>
+  </div>
+</div>
+
+<!-- HOME SCREEN -->
+<div id="content">
+<div id="screen-home" class="screen active">
+<div class="main-grid">
+
+  <!-- LEFT -->
+  <div class="left-col">
+    <div class="card">
+      <div class="card-hd"><i class="ti ti-flame"></i>GÜNLÜK SERİ</div>
+      <div class="streak-num" id="streak-num">7</div>
+      <div class="streak-label">Gün</div>
+      <div class="streak-dots" id="streak-dots"></div>
+      <div class="streak-today">Bugünkü ödül<br><span>+500 TOBY</span></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><i class="ti ti-users"></i>REFERANSLAR</div>
+      <div class="ref-num" id="ref-num-home">0</div>
+      <div class="ref-lbl">Arkadaş</div>
+      <div class="ref-earn" id="ref-earn-home">+0 TOBY / Gün</div>
+      <button class="btn-orange" onclick="showScreen('friends')"><i class="ti ti-user-plus" style="font-size:12px"></i> Davet Et</button>
+    </div>
+    <div class="card">
+      <div class="card-hd"><i class="ti ti-trophy"></i>RANK</div>
+      <div class="rank-row"><div class="rank-medal" id="rank-medal">🥉</div><div class="rank-name" id="rank-name-home">Bronze</div></div>
+      <div class="xp-bar-wrap">
+        <div class="xp-track"><div class="xp-fill" id="xp-fill" style="width:49%"></div></div>
+        <div class="xp-label"><span id="xp-cur">0</span> / <span id="xp-max">50,000</span> XP</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><i class="ti ti-rocket"></i>TGE'YE KALAN</div>
+      <div class="tge-nums">
+        <div class="tge-box"><div class="tge-n" id="tge-d">128</div><div class="tge-u">Gün</div></div>
+        <div class="tge-colon">:</div>
+        <div class="tge-box"><div class="tge-n" id="tge-h">04</div><div class="tge-u">Saat</div></div>
+        <div class="tge-colon">:</div>
+        <div class="tge-box"><div class="tge-n" id="tge-m">36</div><div class="tge-u">Dak</div></div>
+      </div>
+      <button class="btn-orange-outline" onclick="showScreen('tasks')">Detayları Gör →</button>
+    </div>
+  </div>
+
+  <!-- CENTER -->
+  <div class="center-col">
+    <div class="total-label">TOPLAM TOBY</div>
+    <div class="total-val"><span id="total-val">0</span><div class="t-icon">T</div></div>
+    <div class="saatlik">Saatlik Kazanç<br><span id="phr-display">+0 TOBY / Saat</span></div>
+
+    <div id="robot-wrap" onclick="handleTap(event)">
+      <svg width="170" height="185" viewBox="0 0 170 185" id="robot-svg">
+        <!-- glow platform -->
+        <ellipse cx="85" cy="172" rx="55" ry="10" fill="#FF6B00" opacity=".18"/>
+        <ellipse cx="85" cy="172" rx="35" ry="6" fill="#FF6B00" opacity=".25"/>
+        <!-- aura (level based) -->
+        <g id="aura-g"></g>
+        <!-- legs -->
+        <rect x="62" y="148" width="16" height="26" rx="8" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="1"/>
+        <rect x="92" y="148" width="16" height="26" rx="8" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="1"/>
+        <!-- feet -->
+        <rect x="58" y="168" width="24" height="10" rx="5" fill="#111" stroke="#2a2a3e" stroke-width="1"/>
+        <rect x="88" y="168" width="24" height="10" rx="5" fill="#111" stroke="#2a2a3e" stroke-width="1"/>
+        <!-- body -->
+        <rect x="42" y="80" width="86" height="74" rx="18" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="1.5"/>
+        <!-- arms -->
+        <rect x="22" y="88" width="22" height="40" rx="11" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="1"/>
+        <rect x="126" y="88" width="22" height="40" rx="11" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="1"/>
+        <!-- hands -->
+        <circle cx="33" cy="133" r="9" fill="#111" stroke="#2a2a3e" stroke-width="1"/>
+        <circle cx="137" cy="133" r="9" fill="#111" stroke="#2a2a3e" stroke-width="1"/>
+        <!-- chest panel -->
+        <rect x="58" y="96" width="54" height="36" rx="10" fill="#111" stroke="#FF6B00" stroke-width="1"/>
+        <!-- T logo on chest -->
+        <text x="85" y="120" text-anchor="middle" font-size="16" fill="#FF6B00" font-weight="700" font-family="sans-serif">T</text>
+        <!-- neck -->
+        <rect x="76" y="68" width="18" height="14" rx="4" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="1"/>
+        <!-- head -->
+        <rect x="38" y="14" width="94" height="60" rx="22" fill="#f0f0f0" stroke="#e0e0e0" stroke-width="1.5"/>
+        <!-- visor -->
+        <rect x="46" y="22" width="78" height="42" rx="14" fill="#111" stroke="#333" stroke-width="1"/>
+        <!-- eyes -->
+        <circle cx="70" cy="43" r="13" fill="#1a1a1a"/>
+        <circle cx="100" cy="43" r="13" fill="#1a1a1a"/>
+        <!-- eye glow -->
+        <circle cx="70" cy="43" r="9" fill="#FF6B00" opacity=".85" id="eye-l"/>
+        <circle cx="100" cy="43" r="9" fill="#FF6B00" opacity=".85" id="eye-r"/>
+        <!-- pupils -->
+        <circle cx="72" cy="45" r="4" fill="#fff"/>
+        <circle cx="102" cy="45" r="4" fill="#fff"/>
+        <!-- smile -->
+        <path d="M64 57 Q85 67 106 57" stroke="#FF6B00" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- antenna -->
+        <line x1="85" y1="14" x2="85" y2="4" stroke="#FF6B00" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="85" cy="3" r="4" fill="#FF6B00"/>
+        <!-- ear buttons -->
+        <rect x="130" y="30" width="10" height="22" rx="5" fill="#FF6B00" opacity=".8"/>
+        <rect x="30" y="30" width="10" height="22" rx="5" fill="#FF6B00" opacity=".8"/>
+      </svg>
+    </div>
+
+    <div class="energy-section">
+      <div class="energy-top-row">
+        <span class="elabel"><i class="ti ti-bolt" style="font-size:13px"></i> Enerji</span>
+        <span class="eval"><span id="energy-now">500</span> / <span id="energy-max">500</span></span>
+      </div>
+      <div class="energy-blocks" id="energy-blocks"></div>
+    </div>
+
+    <button class="tap-btn-main" id="tap-main" onclick="handleTap(event)">
+      <div class="tap-btn-icon">T</div>
+      <div>
+        <div class="tap-btn-text">TAP TO EARN</div>
+        <div class="tap-btn-sub" id="cpc-label">1 TOBY</div>
+      </div>
+    </button>
+
+    <div class="stats-row">
+      <div class="stat-mini"><i class="ti ti-coins"></i><div class="sm-info"><div class="sm-v" id="stat-total">0</div><div class="sm-l">Toplam Kazanılan</div></div></div>
+      <div class="stat-mini"><i class="ti ti-clock"></i><div class="sm-info"><div class="sm-v" id="stat-time">0g 0s</div><div class="sm-l">Toplam Süre</div></div></div>
+    </div>
+
+    <!-- MESSENGER BANNER -->
+    <div class="messenger-banner" style="margin-top:8px">
+      <div class="mb-phone">
+        <div class="mb-phone-img">
+          <div class="mb-phone-screen">
+            <div class="mb-phone-icon"><i class="ti ti-message" style="font-size:11px;color:#fff"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="mb-content">
+        <div class="mb-badge">ÇOK YAKINDA</div>
+        <div class="mb-title">TOBY MESSENGER</div>
+        <div class="mb-sub">Geleceğin iletişim uygulaması geliyor!</div>
+        <div class="mb-features">
+          <div class="mb-feat"><i class="ti ti-lock"></i><span>Gizli & Güvenli</span></div>
+          <div class="mb-feat"><i class="ti ti-sparkles"></i><span>AI Destekli</span></div>
+          <div class="mb-feat"><i class="ti ti-world"></i><span>Gerçek Zamanlı Çeviri</span></div>
+        </div>
+        <button class="mb-pre-btn" id="pre-btn" onclick="claimTask('pre')">Ön Kayıt Ol <i class="ti ti-arrow-right" style="font-size:13px"></i></button>
+      </div>
+      <div class="mb-right">
+        <div class="mb-store-btn"><i class="ti ti-brand-apple"></i><div class="mb-store-text"><div class="ms-label">Ön Sipariş</div><div class="ms-name">App Store</div></div></div>
+        <div class="mb-store-btn"><i class="ti ti-brand-google-play"></i><div class="mb-store-text"><div class="ms-label">Ön Kayıt</div><div class="ms-name">Google Play</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right-col">
+    <div class="task-card">
+      <div class="tasks-hd">
+        <div class="tasks-hd-left"><i class="ti ti-list-check"></i>GÖREVLER</div>
+        <span class="tasks-see-all" onclick="showScreen('tasks')">Tümü</span>
+      </div>
+      <div id="quick-task-list"></div>
+      <button class="all-tasks-btn" onclick="showScreen('tasks')">Tüm Görevler</button>
+    </div>
+    <div class="news-card">
+      <div class="news-hd">
+        <div class="news-hd-left"><i class="ti ti-news"></i>HABERLER</div>
+        <span class="news-see-all">Tümü</span>
+      </div>
+      <div class="news-item">
+        <div class="news-thumb">📦</div>
+        <div class="news-title">Toby Tokenomics yakında açıklanıyor!</div>
+        <div class="news-time">2 saat önce</div>
+      </div>
+      <div class="news-item">
+        <div class="news-thumb">📱</div>
+        <div class="news-title">Toby Beta sürümü yakında yayında!</div>
+        <div class="news-time">1 gün önce</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- BOOST SCREEN -->
+<div id="screen-boost" class="screen">
+  <div id="boost-content">
+    <div class="section-hd"><i class="ti ti-rocket"></i>YÜKSELTMELERİ</div>
+    <div id="upgrade-list"></div>
+  </div>
+</div>
+
+<!-- TASKS SCREEN -->
+<div id="screen-tasks" class="screen">
+  <div id="tasks-content">
+    <div class="section-hd"><i class="ti ti-list-check"></i>TÜM GÖREVLER</div>
+    <div id="full-task-list"></div>
+  </div>
+</div>
+
+<!-- FRIENDS SCREEN -->
+<div id="screen-friends" class="screen">
+  <div id="friends-content">
+    <div class="section-hd"><i class="ti ti-users"></i>ARKADAŞLARINI DAVET ET</div>
+    <div class="ref-code-box" id="ref-code">TOBY-XXXX</div>
+    <button class="copy-btn-full" onclick="copyRef()"><i class="ti ti-copy" style="font-size:14px;vertical-align:-2px;margin-right:6px"></i>Referral Kodunu Kopyala</button>
+    <div class="ref-stats-grid" style="margin-top:10px">
+      <div class="rs-box"><div class="rs-v" id="ref-count-p">0</div><div class="rs-l">Davet Edilen</div></div>
+      <div class="rs-box"><div class="rs-v" id="ref-earned-p">0</div><div class="rs-l">Kazanılan TOBY</div></div>
+    </div>
+    <div class="ref-info-box">Her davet = <b>50,000 TOBY</b><br>Arkadaşın kazancının <b>%10</b>'u sana gelir<br>Premium davet = <b>100,000 TOBY</b></div>
+  </div>
+</div>
+
+<!-- RANK SCREEN -->
+<div id="screen-rank" class="screen">
+  <div id="rank-content">
+    <div class="section-hd"><i class="ti ti-trophy"></i>SIRALAMASI</div>
+    <div id="rank-list"></div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<!-- BOTTOM TABS -->
+<div id="tabs">
+  <div class="tab active" onclick="showScreen('home')" id="tab-home"><i class="ti ti-bolt"></i>Mine</div>
+  <div class="tab" onclick="showScreen('boost')" id="tab-boost"><i class="ti ti-rocket"></i>Boost</div>
+  <div class="tab" onclick="showScreen('tasks')" id="tab-tasks"><i class="ti ti-list-check"></i>Görevler<div class="tab-badge" id="task-badge">12</div></div>
+  <div class="tab" onclick="showScreen('friends')" id="tab-friends"><i class="ti ti-users"></i>Arkadaşlar</div>
+  <div class="tab" onclick="showScreen('rank')" id="tab-rank"><i class="ti ti-trophy"></i>Sıralama</div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+const LEVELS=[
+  {min:0,name:'Bronze Miner',medal:'🥉',rank:'Bronze',xpMax:50000},
+  {min:50000,name:'Silver Miner',medal:'🥈',rank:'Silver',xpMax:200000},
+  {min:200000,name:'Gold Miner',medal:'🥇',rank:'Gold',xpMax:500000},
+  {min:500000,name:'Toby Elite',medal:'💎',rank:'Elite',xpMax:1000000},
+  {min:1000000,name:'Toby Genesis',medal:'👑',rank:'Genesis',xpMax:9999999},
+];
+
+const state={
+  coins:0,total:0,energy:500,maxEnergy:500,cpc:1,perHour:0,
+  refCode:'TOBY-'+Math.random().toString(36).substr(2,4).toUpperCase(),
+  refCount:0,refEarned:0,streak:7,startTime:Date.now(),
+  tasks:[
+    {id:'tg',name:'Telegram kanalına katıl',reward:30000,icon:'ti-brand-telegram',done:false},
+    {id:'yt',name:'YouTube kanalına abone ol',reward:50000,icon:'ti-brand-youtube',done:false},
+    {id:'ig',name:'Instagram hesabını takip et',reward:50000,icon:'ti-brand-instagram',done:false},
+    {id:'x',name:'X (Twitter) takip et',reward:50000,icon:'ti-brand-x',done:false},
+    {id:'pre',name:'Toby uygulamasına ön kayıt ol',reward:100000,icon:'ti-device-mobile',done:false},
+    {id:'5ref',name:'5 arkadaşını davet et',reward:100000,icon:'ti-user-plus',done:false},
+    {id:'share',name:'Gönderi paylaş + etiketle',reward:20000,icon:'ti-share',done:false},
+    {id:'daily',name:'Günlük giriş bonusu',reward:10000,icon:'ti-calendar',done:false},
+    {id:'ai',name:'Toby AI özelliğini dene',reward:25000,icon:'ti-robot',done:false},
+  ],
+  upgrades:[
+    {id:'cpc',name:'Tıklama Gücü',desc:'Her tıklamadan daha fazla TOBY',icon:'ti-hand-finger',level:1,max:10,baseCost:1000,mult:2.2,effect:'cpc',perLevel:1},
+    {id:'energy',name:'Enerji Kapasitesi',desc:'Maksimum enerji miktarı',icon:'ti-bolt',level:1,max:10,baseCost:2000,mult:2,effect:'energy',perLevel:100},
+    {id:'server',name:'AI Sunucusu',desc:'Pasif TOBY / saat kazancı',icon:'ti-server',level:0,max:10,baseCost:5000,mult:2.5,effect:'perHour',perLevel:500},
+    {id:'model',name:'Toby Modeli',desc:'Gelişmiş AI = daha fazla kazanç',icon:'ti-brain',level:0,max:10,baseCost:15000,mult:3,effect:'perHour',perLevel:2000},
+    {id:'users',name:'Kullanıcı Kitlesi',desc:'Platform büyüyor, kazanç katlanıyor',icon:'ti-users',level:0,max:5,baseCost:50000,mult:4,effect:'perHour',perLevel:8000},
+    {id:'regen',name:'Enerji Yenileme',desc:'Enerji daha hızlı dolar',icon:'ti-refresh',level:1,max:5,baseCost:8000,mult:3,effect:'regen',perLevel:1},
+  ],
+  leaderboard:[
+    {name:'CryptoKing',coins:1250000,rank:'Genesis'},
+    {name:'TonMaster',coins:980000,rank:'Elite'},
+    {name:'TobyFan99',coins:750000,rank:'Elite'},
+    {name:'AIHunter',coins:520000,rank:'Gold'},
+    {name:'BlockChainer',coins:380000,rank:'Gold'},
+    {name:'Sen',coins:0,rank:'Bronze',isMe:true},
+  ]
+};
+
+function fmt(n){if(n>=1000000)return (n/1000000).toFixed(1)+'M';if(n>=1000)return (n/1000).toFixed(1)+'K';return Math.round(n).toLocaleString()}
+function calcCost(u){return Math.round(u.baseCost*Math.pow(u.mult,Math.max(0,u.level)))}
+function getLevel(){for(let i=LEVELS.length-1;i>=0;i--)if(state.total>=LEVELS[i].min)return i;return 0;}
+
+function recalc(){
+  state.cpc=1;state.maxEnergy=500;state.perHour=0;
+  state.upgrades.forEach(u=>{
+    if(u.effect==='cpc'&&u.level>0) state.cpc=1+u.perLevel*(u.level-1);
+    if(u.effect==='energy'&&u.level>0) state.maxEnergy=500+u.perLevel*(u.level-1);
+    if(u.effect==='perHour') state.perHour+=u.perLevel*u.level;
+  });
+}
+
+function updateAura(){
+  const lv=getLevel();
+  const g=document.getElementById('aura-g');
+  g.innerHTML='';
+  if(lv>=2){
+    const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx','85');c.setAttribute('cy','100');c.setAttribute('r','78');
+    c.setAttribute('fill','none');c.setAttribute('stroke','#FF6B00');
+    c.setAttribute('stroke-width',lv>=4?'2':'1');c.setAttribute('opacity',lv>=4?'0.5':'0.2');
+    g.appendChild(c);
+  }
+  if(lv>=4){
+    const c2=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c2.setAttribute('cx','85');c2.setAttribute('cy','100');c2.setAttribute('r','90');
+    c2.setAttribute('fill','none');c2.setAttribute('stroke','#FF6B00');
+    c2.setAttribute('stroke-width','1');c2.setAttribute('opacity','0.1');
+    g.appendChild(c2);
+  }
+}
+
+function updateEnergyBlocks(){
+  const el=document.getElementById('energy-blocks');
+  const total=10;
+  const filled=Math.round((state.energy/state.maxEnergy)*total);
+  el.innerHTML=Array.from({length:total},(_,i)=>`<div class="eb${i<filled?' on':''}"></div>`).join('');
+}
+
+function updateStreakDots(){
+  const el=document.getElementById('streak-dots');
+  if(!el) return;
+  el.innerHTML=Array.from({length:7},(_,i)=>{
+    if(i<6) return `<div class="sd done"><i class="ti ti-check" style="font-size:9px;color:#fff"></i></div>`;
+    return `<div class="sd gift"><i class="ti ti-gift" style="font-size:9px;color:#FF6B00"></i></div>`;
+  }).join('');
+}
+
+function renderQuickTasks(){
+  const el=document.getElementById('quick-task-list');
+  if(!el) return;
+  const items=state.tasks.filter(t=>!t.done).slice(0,5);
+  el.innerHTML=items.map(t=>`
+    <div class="task-item">
+      <div class="ti-icon"><i class="ti ${t.icon}"></i></div>
+      <div class="ti-info"><div class="ti-name">${t.name}</div><div class="ti-reward">+${fmt(t.reward)} TOBY</div></div>
+      <button class="ti-action" onclick="claimTask('${t.id}')"><i class="ti ti-arrow-right"></i></button>
+    </div>`).join('')||'<div style="font-size:11px;color:#555;padding:8px 0;text-align:center">Tüm görevler tamamlandı!</div>';
+}
+
+function renderFullTasks(){
+  const el=document.getElementById('full-task-list');
+  if(!el) return;
+  el.innerHTML=state.tasks.map(t=>`
+    <div class="full-task">
+      <div class="ft-ico"><i class="ti ${t.icon}"></i></div>
+      <div class="ft-info"><div class="ft-name">${t.name}</div><div class="ft-reward">+${fmt(t.reward)} TOBY</div></div>
+      <button class="ft-btn${t.done?' claimed':''}" onclick="claimTask('${t.id}')" ${t.done?'disabled':''}>
+        ${t.done?'Tamamlandı':'Al'}
+      </button>
+    </div>`).join('');
+}
+
+function renderUpgrades(){
+  const el=document.getElementById('upgrade-list');
+  if(!el) return;
+  el.innerHTML=state.upgrades.map(u=>{
+    const cost=calcCost(u);
+    const maxed=u.level>=u.max;
+    const can=state.coins>=cost&&!maxed;
+    return `<div class="upg-card">
+      <div class="upg-ico"><i class="ti ${u.icon}"></i></div>
+      <div class="upg-info"><div class="upg-name">${u.name}</div><div class="upg-desc">${u.desc}</div></div>
+      <div class="upg-right">
+        <div class="upg-cost">${maxed?'MAX':fmt(cost)+' T'}</div>
+        <div class="upg-lvl">Seviye ${u.level}/${u.max}</div>
+        ${!maxed?`<button class="upg-btn" onclick="buyUpgrade('${u.id}')" ${can?'':'disabled'}>Yükselt</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderRank(){
+  const el=document.getElementById('rank-list');
+  if(!el) return;
+  const lb=[...state.leaderboard];
+  lb[5].coins=state.total;
+  lb.sort((a,b)=>b.coins-a.coins);
+  el.innerHTML=lb.map((p,i)=>`
+    <div class="rank-card" style="${p.isMe?'border-color:rgba(255,107,0,.4)':''}">
+      <div class="rank-pos${i<3?' top':''}">${i+1}</div>
+      <div class="rank-avatar" style="${p.isMe?'background:#FF6B00':'background:#333'}">${p.name[0]}</div>
+      <div class="rank-name-col"><div class="rank-uname">${p.isMe?'Sen ('+p.name+')':p.name}</div><div class="rank-coins">${fmt(p.coins)} TOBY</div></div>
+      <div class="rank-badge-pill">${p.rank}</div>
+    </div>`).join('');
+}
+
+function updateUI(){
+  recalc();
+  const lv=getLevel();
+  const lvData=LEVELS[lv];
+  const nextLv=LEVELS[Math.min(lv+1,LEVELS.length-1)];
+  const xpPct=lv<LEVELS.length-1?Math.min(100,((state.total-lvData.min)/(nextLv.min-lvData.min))*100):100;
+
+  document.getElementById('total-val').textContent=fmt(state.coins);
+  document.getElementById('phr-display').textContent='+'+fmt(state.perHour)+' TOBY / Saat';
+  document.getElementById('energy-now').textContent=Math.round(state.energy);
+  document.getElementById('energy-max').textContent=state.maxEnergy;
+  document.getElementById('level-num').textContent=lv*10+1;
+  document.getElementById('level-name').textContent=lvData.name;
+  document.getElementById('rank-medal').textContent=lvData.medal;
+  document.getElementById('rank-name-home').textContent=lvData.rank;
+  document.getElementById('xp-fill').style.width=xpPct+'%';
+  document.getElementById('xp-cur').textContent=fmt(state.total);
+  document.getElementById('xp-max').textContent=fmt(nextLv.min);
+  document.getElementById('cpc-label').textContent=state.cpc+' TOBY';
+  document.getElementById('stat-total').textContent=fmt(state.total);
+  const elapsed=Math.floor((Date.now()-state.startTime)/1000);
+  const days=Math.floor(elapsed/86400);const hours=Math.floor((elapsed%86400)/3600);
+  document.getElementById('stat-time').textContent=days+'g '+hours+'s';
+  document.getElementById('ref-num-home').textContent=state.refCount;
+  document.getElementById('ref-earn-home').textContent='+'+fmt(state.refCount*540)+' TOBY / Gün';
+  document.getElementById('ref-code').textContent=state.refCode;
+  document.getElementById('ref-count-p').textContent=state.refCount;
+  document.getElementById('ref-earned-p').textContent=fmt(state.refEarned);
+  const pending=state.tasks.filter(t=>!t.done).length;
+  const badge=document.getElementById('task-badge');
+  badge.textContent=pending;badge.style.display=pending?'block':'none';
+  updateEnergyBlocks();
+  updateAura();
+  renderQuickTasks();
+}
+
+function handleTap(e){
+  if(state.energy<1) return;
+  state.energy=Math.max(0,state.energy-1);
+  const gain=state.cpc;
+  state.coins+=gain;state.total+=gain;
+  updateUI();renderUpgrades();
+  const wrap=document.getElementById('robot-wrap');
+  for(let i=0;i<Math.min(state.cpc,4);i++){
+    const pop=document.createElement('div');
+    pop.className='tap-pop';
+    pop.textContent='+'+gain;
+    const rx=e.clientX-wrap.getBoundingClientRect().left;
+    const ry=e.clientY-wrap.getBoundingClientRect().top;
+    pop.style.left=(rx-10+(i-1)*16)+'px';
+    pop.style.top=(ry-10)+'px';
+    wrap.appendChild(pop);
+    setTimeout(()=>pop.remove(),700);
+  }
+}
+
+function buyUpgrade(id){
+  const u=state.upgrades.find(x=>x.id===id);
+  if(!u||u.level>=u.max) return;
+  const cost=calcCost(u);
+  if(state.coins<cost) return;
+  state.coins-=cost;u.level++;
+  recalc();updateUI();renderUpgrades();
+}
+
+function claimTask(id){
+  const t=state.tasks.find(x=>x.id===id);
+  if(!t||t.done) return;
+  t.done=true;state.coins+=t.reward;state.total+=t.reward;
+  updateUI();renderFullTasks();renderUpgrades();
+  if(id==='pre'){
+    const btn=document.getElementById('pre-btn');
+    if(btn){btn.textContent='Ön Kayıt Tamamlandı! ✓';btn.style.background='#1a4d1a';btn.disabled=true;}
+  }
+}
+
+function copyRef(){
+  navigator.clipboard&&navigator.clipboard.writeText(state.refCode);
+  const btn=document.querySelector('.copy-btn-full');
+  const orig=btn.innerHTML;
+  btn.textContent='Kopyalandı! ✓';
+  setTimeout(()=>btn.innerHTML=orig,1500);
+}
+
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='boost'){renderUpgrades();}
+  if(name==='tasks'){renderFullTasks();}
+  if(name==='rank'){renderRank();}
+}
+
+// TGE countdown
+function updateTGE(){
+  const target=new Date();target.setDate(target.getDate()+128);
+  const diff=Math.max(0,target-Date.now());
+  const d=Math.floor(diff/86400000);
+  const h=Math.floor((diff%86400000)/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  const el_d=document.getElementById('tge-d');
+  const el_h=document.getElementById('tge-h');
+  const el_m=document.getElementById('tge-m');
+  if(el_d)el_d.textContent=String(d).padStart(3,'0');
+  if(el_h)el_h.textContent=String(h).padStart(2,'0');
+  if(el_m)el_m.textContent=String(m).padStart(2,'0');
+}
+
+setInterval(()=>{
+  if(state.energy<state.maxEnergy){state.energy=Math.min(state.maxEnergy,state.energy+1);updateUI();}
+},2000);
+
+setInterval(()=>{
+  if(state.perHour>0){state.coins+=state.perHour/3600;state.total+=state.perHour/3600;updateUI();}
+},1000);
+
+setInterval(updateTGE,60000);
+
+updateStreakDots();
+updateTGE();
+updateUI();
+</script>
+</body>
+</html>
